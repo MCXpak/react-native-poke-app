@@ -2,29 +2,32 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, ScrollView, Button } from 'react-native';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { useState, useEffect } from 'react';
 
 const Tab = createBottomTabNavigator()
 
 
-async function getPokemonData(){
-  const response = await fetch(`https://pokeapi.co/api/v2/pokemon/1`) //Get data
-  const pokemonData = await response.json() //JSONify
-  console.log(pokemonData.name)
-  const pokeName = String(pokemonData.name)
-  return pokeName
-}
 
 const FeedScreen = () => {
 
   const nav = useNavigation();
 
+  const [pokeName, setPokeName] = useState("Loading...")
+
+  function getPokemonData(){
+    fetch(`https://pokeapi.co/api/v2/pokemon/3`)
+    .then(res => res.json())
+    .then(data => setPokeName(data.name))
+  }
+
+  getPokemonData()
+
   function handleNavigation(){
     nav.navigate('Catalog')
   }
-  console.log(getPokemonData())
   return(
     <View style={styles.layout}>
-      <Text style={styles.title}>{getPokemonData()}</Text>
+      <Text style={styles.title}>{pokeName}</Text>
       <Button title="Go to Catalog" onPress={handleNavigation}/>
     </View>
   )
